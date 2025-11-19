@@ -41,7 +41,7 @@ export default function Auth() {
       setMode("login");
       setName("");
     } else {
-      alert("Login realizado com sucesso!");
+      window.location.href = "/dashboard";
     }
     setEmail("");
     setPassword("");
@@ -64,131 +64,140 @@ export default function Auth() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a1428] flex items-center justify-center p-0">
-      {/* Força o corpo da página a ocupar a tela toda e remove qualquer fundo branco padrão */}
-      <style jsx global>{`
-        html,
-        body,
-        #__next,
-        .__className_hash {
-          margin: 0;
-          padding: 0;
-          height: 100%;
-          background-color: #0a1428 !important; /* cor escura igual ao fundo */
-        }
-      `}</style>
+    <>
+      {/* Fundo escuro total + viewport fixo para mobile */}
+      <div className="fixed inset-0 bg-[#0a1428] flex flex-col">
+        {/* Força fundo escuro em tudo (Next.js/Vite) */}
+        <style jsx global>{`
+          html,
+          body,
+          #__next,
+          .__className_hash {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: #0a1428 !important;
+            overflow: hidden;
+          }
+        `}</style>
 
-      <div
-        className="bg-[#0f172a] rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-cyan-900/50 
-                      h-screen max-h-screen md:h-auto md:max-h-none md:rounded-3xl md:my-8"
-      >
-        {/* Header */}
-        <div className="bg-[#0f1b3a] p-8 pb-6 text-center">
-          <h1 className="text-3xl font-bold text-cyan-400 mb-8 tracking-wider">
-            Mail Application
-          </h1>
+        {/* Conteúdo centralizado com scroll suave */}
+        <div className="flex-1 flex flex-col items-center justify-center px-4 py-8 overflow-y-auto">
+          <div className="w-full max-w-md">
+            {/* Card principal */}
+            <div className="bg-[#0f172a] rounded-3xl shadow-2xl border border-cyan-900/50 overflow-hidden">
+              {/* Header */}
+              <div className="bg-[#0f1b3a] p-6 pb-8 text-center">
+                <h1 className="text-3xl sm:text-4xl font-bold text-cyan-400 mb-10 tracking-wider">
+                  Mail Application
+                </h1>
 
-          {/* Toggle Login / Register */}
-          <div className="relative inline-flex bg-[#1e293b] rounded-full p-1 w-80 max-w-full mx-auto">
-            <div
-              className="absolute top-1 left-1 w-1/2 h-[calc(100%-8px)] bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full transition-all duration-500 shadow-lg"
-              style={{
-                transform:
-                  mode === "login" ? "translateX(0%)" : "translateX(100%)",
-              }}
-            />
-            <button
-              type="button"
-              onClick={() => {
-                setMode("login");
-                setErrors({});
-              }}
-              className={`relative z-10 w-1/2 py-3 text-lg font-semibold transition-all duration-300 ${
-                mode === "login" ? "text-white" : "text-cyan-300"
-              }`}
-            >
-              LOGIN
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setMode("register");
-                setErrors({});
-              }}
-              className={`relative z-10 w-1/2 py-3 text-lg font-semibold transition-all duration-300 ${
-                mode === "register" ? "text-white" : "text-cyan-300"
-              }`}
-            >
-              REGISTAR
-            </button>
+                {/* Toggle responsivo */}
+                <div className="relative inline-flex bg-[#1e293b] rounded-full p-1 w-full max-w-xs mx-auto">
+                  <div
+                    className="absolute inset-1 w-1/2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full transition-all duration-500 shadow-lg"
+                    style={{
+                      transform:
+                        mode === "login"
+                          ? "translateX(0%)"
+                          : "translateX(100%)",
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode("login");
+                      setErrors({});
+                    }}
+                    className={`relative z-10 flex-1 py-3.5 text-base sm:text-lg font-bold transition-all ${
+                      mode === "login" ? "text-white" : "text-cyan-300"
+                    }`}
+                  >
+                    LOGIN
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode("register");
+                      setErrors({});
+                    }}
+                    className={`relative z-10 flex-1 py-3.5 text-base sm:text-lg font-bold transition-all ${
+                      mode === "register" ? "text-white" : "text-cyan-300"
+                    }`}
+                  >
+                    REGISTAR
+                  </button>
+                </div>
+              </div>
+
+              {/* Formulário */}
+              <div className="p-6 sm:p-8">
+                <form className="space-y-6" onSubmit={handleSubmit}>
+                  {mode === "register" && (
+                    <div className="space-y-2">
+                      <input
+                        type="text"
+                        placeholder="Nome Completo"
+                        value={name}
+                        onChange={handleNameChange}
+                        className={`w-full px-5 py-4 bg-[#1e293b] border ${
+                          errors.name ? "border-red-500" : "border-cyan-800"
+                        } rounded-xl text-cyan-100 placeholder-cyan-500 focus:outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/30 transition-all text-base`}
+                      />
+                      {errors.name && (
+                        <p className="text-red-400 text-sm">{errors.name}</p>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="space-y-2">
+                    <input
+                      type="email"
+                      placeholder="Email"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        setErrors((prev) => ({ ...prev, email: undefined }));
+                      }}
+                      className={`w-full px-5 py-4 bg-[#1e293b] border ${
+                        errors.email ? "border-red-500" : "border-cyan-800"
+                      } rounded-xl text-cyan-100 placeholder-cyan-500 focus:outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/30 transition-all text-base`}
+                    />
+                    {errors.email && (
+                      <p className="text-red-400 text-sm">{errors.email}</p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <input
+                      type="password"
+                      placeholder="Password"
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        setErrors((prev) => ({ ...prev, password: undefined }));
+                      }}
+                      className={`w-full px-5 py-4 bg-[#1e293b] border ${
+                        errors.password ? "border-red-500" : "border-cyan-800"
+                      } rounded-xl text-cyan-100 placeholder-cyan-500 focus:outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/30 transition-all text-base`}
+                    />
+                    {errors.password && (
+                      <p className="text-red-400 text-sm">{errors.password}</p>
+                    )}
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full py-4 mt-8 text-lg font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl shadow-xl hover:from-cyan-400 hover:to-blue-500 transform hover:scale-105 transition-all duration-300 active:scale-95"
+                  >
+                    {mode === "login" ? "ENTRAR" : "CADASTRAR"}
+                  </button>
+                </form>
+              </div>
+            </div>
           </div>
         </div>
-
-        {/* Formulário */}
-        <div className="p-8 pt-10">
-          <form className="space-y-7" onSubmit={handleSubmit}>
-            {mode === "register" && (
-              <div className="space-y-2">
-                <input
-                  type="text"
-                  placeholder="Nome Completo"
-                  value={name}
-                  onChange={handleNameChange}
-                  className={`w-full px-4 py-3 bg-[#1e293b] border ${
-                    errors.name ? "border-red-500" : "border-cyan-800"
-                  } rounded-xl text-cyan-100 placeholder-cyan-500 focus:outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/30 transition-all duration-300`}
-                />
-                {errors.name && (
-                  <p className="text-red-400 text-sm mt-1">{errors.name}</p>
-                )}
-              </div>
-            )}
-
-            <div className="space-y-1">
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  setErrors((prev) => ({ ...prev, email: undefined }));
-                }}
-                className={`w-full px-5 py-3 bg-[#1e293b] border ${
-                  errors.email ? "border-red-500" : "border-cyan-800"
-                } rounded-xl text-cyan-100 placeholder-cyan-500 focus:outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/30 transition-all duration-300`}
-              />
-              {errors.email && (
-                <p className="text-red-400 text-sm mt-1">{errors.email}</p>
-              )}
-            </div>
-
-            <div className="space-y-1">
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  setErrors((prev) => ({ ...prev, password: undefined }));
-                }}
-                className={`w-full px-5 py-3 bg-[#1e293b] border ${
-                  errors.password ? "border-red-500" : "border-cyan-800"
-                } rounded-xl text-cyan-100 placeholder-cyan-500 focus:outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/30 transition-all duration-300`}
-              />
-              {errors.password && (
-                <p className="text-red-400 text-sm mt-1">{errors.password}</p>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              className="w-full py-3 mt-8 text-lg font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl shadow-lg hover:from-cyan-400 hover:to-blue-500 transform hover:scale-105 transition-all duration-300"
-            >
-              {mode === "login" ? "ENTRAR" : "CADASTRAR"}
-            </button>
-          </form>
-        </div>
       </div>
-    </div>
+    </>
   );
 }
