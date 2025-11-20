@@ -41,7 +41,7 @@ export default function Auth() {
       setMode("login");
       setName("");
     } else {
-      window.location.href = "/dashboard";
+      window.location.href = "/dashboard"; // Redireciona para dashboard após login
     }
     setEmail("");
     setPassword("");

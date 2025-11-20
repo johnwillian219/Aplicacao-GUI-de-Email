@@ -5,6 +5,7 @@ import Inbox from "./pages/Inbox";
 import Outbox from "./pages/Outbox";
 import Settings from "./pages/Settings";
 import Compose from "./pages/Compose";
+import ChangePassword from "./pages/ChangePassword";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Route path="/outbox" element={<Outbox />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/compose" element={<Compose />} />
+      <Route path="/change-password" element={<ChangePassword />} />
     </Routes>
   );
 }

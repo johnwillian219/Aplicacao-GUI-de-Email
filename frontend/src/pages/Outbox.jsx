@@ -357,10 +357,27 @@ export default function Outbox() {
         {/* Bottom Nav Mobile */}
         <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-[#0f1b3a]/95 backdrop-blur-2xl border-t border-cyan-900/50 z-40">
           <div className="grid grid-cols-4 py-4 text-center">
-            <MobileNavItem iconUrl={pencilUrl} label="Escrever" />
-            <MobileNavItem iconUrl={inboxUrl} label="Inbox" />
-            <MobileNavItem iconUrl={outboxUrl} label="Outbox" active />
-            <MobileNavItem iconUrl={settingsUrl} label="Config" />
+            <MobileNavItem
+              iconUrl={pencilUrl}
+              label="Escrever"
+              onClick={goToCompose}
+            />
+            <MobileNavItem
+              iconUrl={inboxUrl}
+              label="Inbox"
+              onClick={goToInbox}
+            />
+            <MobileNavItem
+              iconUrl={outboxUrl}
+              label="Outbox"
+              active
+              onClick={goToOutbox}
+            />
+            <MobileNavItem
+              iconUrl={settingsUrl}
+              label="Config"
+              onClick={goToSettings}
+            />
           </div>
         </nav>
       </div>
@@ -391,9 +408,10 @@ function SidebarItem({ iconUrl, label, active = false, onClick }) {
   );
 }
 
-function MobileNavItem({ iconUrl, label, active = false }) {
+function MobileNavItem({ iconUrl, label, active = false, onClick }) {
   return (
     <button
+      onClick={onClick}
       className={`flex flex-col items-center ${
         active ? "text-cyan-400" : "text-gray-400"
       }`}

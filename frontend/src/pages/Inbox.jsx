@@ -306,9 +306,22 @@ export default function Inbox() {
               label="Escrever"
               onClick={goToCompose}
             />
-            <MobileNavItem iconUrl={inboxUrl} label="Inbox" active />
-            <MobileNavItem iconUrl={sendUrl} label="Enviados" />
-            <MobileNavItem iconUrl={settingsUrl} label="Config" />
+            <MobileNavItem
+              iconUrl={inboxUrl}
+              label="Inbox"
+              active
+              onClick={goToInbox}
+            />
+            <MobileNavItem
+              iconUrl={sendUrl}
+              label="Enviados"
+              onClick={goToOutbox}
+            />
+            <MobileNavItem
+              iconUrl={settingsUrl}
+              label="Config"
+              onClick={goToSettings}
+            />
           </div>
         </nav>
       </div>

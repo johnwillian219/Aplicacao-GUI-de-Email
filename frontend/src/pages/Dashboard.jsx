@@ -15,7 +15,7 @@ import logoutUrl from "../icons/logout.svg";
 import menuUrl from "../icons/menu.svg";
 
 export default function Dashboard() {
-  const [userType] = useState("user"); // muda para "admin" ou "user" para testar
+  const [userType] = useState("admin"); // muda para "admin" ou "user" para testar
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const stats = [
@@ -114,7 +114,7 @@ export default function Dashboard() {
       )}
 
       <div className="flex-1 flex flex-col">
-        {/* Header perfeito no mobile */}
+        {/* Header no mobile */}
         <header className="bg-gradient-to-r from-[#0f1b3a] to-[#0a2e5c] rounded-3xl mx-4 mt-4 mb-6 p-4 lg:p-6 flex items-center justify-between shadow-2xl border border-cyan-800/30">
           <div className="flex items-center gap-3 lg:gap-4 flex-1 min-w-0">
             <div className="bg-cyan-500/20 p-2.5 lg:p-3 rounded-2xl flex-shrink-0">
