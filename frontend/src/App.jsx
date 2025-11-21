@@ -12,15 +12,12 @@ function App() {
     <Routes>
       <Route path="/" element={<Navigate to="/auth" replace />} />
       <Route path="/auth" element={<Auth />} />
-      <Route path="/Aplicacao-GUI-de-Email/dashboard" element={<Dashboard />} />
-      <Route path="/Aplicacao-GUI-de-Email/inbox" element={<Inbox />} />
-      <Route path="/Aplicacao-GUI-de-Email/outbox" element={<Outbox />} />
-      <Route path="/Aplicacao-GUI-de-Email/settings" element={<Settings />} />
-      <Route path="/Aplicacao-GUI-de-Email/compose" element={<Compose />} />
-      <Route
-        path="/Aplicacao-GUI-de-Email/change-password"
-        element={<ChangePassword />}
-      />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/inbox" element={<Inbox />} />
+      <Route path="/outbox" element={<Outbox />} />
+      <Route path="/settings" element={<Settings />} />
+      <Route path="/compose" element={<Compose />} />
+      <Route path="/change-password" element={<ChangePassword />} />
     </Routes>
   );
 }
