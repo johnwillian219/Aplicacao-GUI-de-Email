@@ -4,8 +4,11 @@
     <meta charset="utf-8" />
     <title>Redirecting...</title>
     <script>
-      const path = window.location.pathname;
-      window.location.replace("/Aplicacao-GUI-de-Email/#" + path); // Redireciona para o HashRouter com o caminho original
+      const path =
+        window.location.pathname +
+        window.location.search +
+        window.location.hash;
+      window.location.replace("/Aplicacao-GUI-de-Email/index.html" + path);
     </script>
   </head>
   <body></body>
