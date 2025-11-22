@@ -38,7 +38,7 @@ export default function Dashboard() {
 
   const handleLogout = () => {
     localStorage.clear();
-    window.location.href = "/auth";
+    window.location.href = "/Aplicacao-GUI-de-Email/#/auth";
   };
 
   const goToCompose = () => {
