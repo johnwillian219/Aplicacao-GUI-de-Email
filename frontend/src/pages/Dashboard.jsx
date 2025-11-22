@@ -42,19 +42,19 @@ export default function Dashboard() {
   };
 
   const goToCompose = () => {
-    window.location.href = "/compose";
+    window.location.href = "/Aplicacao-GUI-de-Email/#/compose";
   };
 
   const goToInbox = () => {
-    window.location.href = "/inbox";
+    window.location.href = "/Aplicacao-GUI-de-Email/#/inbox";
   };
 
   const goToOutbox = () => {
-    window.location.href = "/outbox";
+    window.location.href = "/Aplicacao-GUI-de-Email/#/outbox";
   };
 
   const goToSettings = () => {
-    window.location.href = "/settings";
+    window.location.href = "/Aplicacao-GUI-de-Email/#/settings";
   };
 
   return (
