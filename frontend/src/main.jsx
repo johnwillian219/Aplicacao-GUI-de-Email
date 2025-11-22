@@ -6,7 +6,7 @@ import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <HashRouter basename="/Aplicacao-GUI-de-Email">
+    <HashRouter>
       <App />
     </HashRouter>
   </React.StrictMode>
