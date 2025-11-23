@@ -1,7 +1,8 @@
 import { useState } from "react";
-
+import { useNotifications } from "../hooks/useNotifications";
 // =============== ÍCONES ===============
 import bellOnUrl from "../icons/bell-on.svg";
+import bellOffUrl from "../icons/bell-off.svg";
 import dashboardUrl from "../icons/dashboard.svg";
 import inboxUrl from "../icons/inbox.svg";
 import outboxUrl from "../icons/outbox.svg";
@@ -14,32 +15,46 @@ import menuUrl from "../icons/menu.svg";
 
 export default function ChangePassword() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { enabled: notificationsEnabled, toggle: toggleNotifications } =
+    useNotifications();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
+  // Novos estados para os modais
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    setError(""); // limpa erro anterior
 
     if (!currentPassword || !newPassword || !confirmPassword) {
       setError("Todos os campos são obrigatórios");
+
       return;
     }
 
     if (newPassword !== confirmPassword) {
       setError("As novas palavras-passe não coincidem");
+
       return;
     }
 
     if (newPassword.length < 6) {
       setError("A nova palavra-passe deve ter pelo menos 6 caracteres");
+
       return;
     }
 
-    // Simulação de sucesso
-    alert("Palavra-passe alterada com sucesso!");
-    window.location.href = "/settings";
+    // Tudo certo → mostra modal de sucesso
+    setShowSuccessModal(true);
+
+    // Após 2 segundos, vai para Settings
+    setTimeout(() => {
+      window.location.href = "/Aplicacao-GUI-de-Email/#/settings";
+    }, 5000);
   };
 
   const handleLogout = () => {
@@ -143,14 +158,25 @@ export default function ChangePassword() {
               Mail Application
             </h1>
           </div>
-          <div className="flex items-center gap-3 lg:gap-4">
-            <button className="p-2.5 lg:p-3 hover:bg-white/10 rounded-2xl transition-all">
+          <div className="flex items-center gap-3 lg:gap-4 flex-shrink-0">
+            {/* Botão de notificações com toggle */}
+            <button
+              onClick={toggleNotifications}
+              className="relative p-2.5 lg:p-3 hover:bg-white/10 rounded-2xl transition-all duration-300 group"
+              title={
+                notificationsEnabled
+                  ? "Desativar notificações"
+                  : "Ativar notificações"
+              }
+            >
               <img
-                src={bellOnUrl}
+                src={notificationsEnabled ? bellOnUrl : bellOffUrl}
                 alt="Notificações"
-                className="w-6 h-6 lg:w-7 lg:h-7 filter-white"
+                className="w-6 h-6 lg:w-7 lg:h-7 filter-white transition-all duration-300"
               />
             </button>
+
+            {/* Avatar */}
             <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full flex items-center justify-center font-bold text-lg lg:text-xl shadow-lg">
               J
             </div>
@@ -180,7 +206,7 @@ export default function ChangePassword() {
                     placeholder="Digite a palavra-passe atual"
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
-                    className="w-full px-6 py-5 bg-[#1e293b]/70 border border-cyan-800/50 rounded-2xl text-white placeholder-cyan-500 focus:outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/30 transition-all text-lg"
+                    className="w-full px-6 py-4 bg-[#1e293b]/70 border border-cyan-800/50 rounded-2xl text-white placeholder-cyan-500 focus:outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/30 transition-all text-lg"
                   />
                 </div>
 
@@ -191,7 +217,7 @@ export default function ChangePassword() {
                     placeholder="Digite a nova palavra-passe"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full px-6 py-5 bg-[#1e293b]/70 border border-cyan-800/50 rounded-2xl text-white placeholder-cyan-500 focus:outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/30 transition-all text-lg"
+                    className="w-full px-6 py-4 bg-[#1e293b]/70 border border-cyan-800/50 rounded-2xl text-white placeholder-cyan-500 focus:outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/30 transition-all text-lg"
                   />
                 </div>
 
@@ -202,7 +228,7 @@ export default function ChangePassword() {
                     placeholder="Confirme a nova palavra-passe"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full px-6 py-5 bg-[#1e293b]/70 border border-cyan-800/50 rounded-2xl text-white placeholder-cyan-500 focus:outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/30 transition-all text-lg"
+                    className="w-full px-6 py-4 bg-[#1e293b]/70 border border-cyan-800/50 rounded-2xl text-white placeholder-cyan-500 focus:outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/30 transition-all text-lg"
                   />
                 </div>
 
@@ -214,10 +240,10 @@ export default function ChangePassword() {
                 )}
 
                 {/* Botão Submeter */}
-                <div className="pt-6">
+                <div className="pt-5">
                   <button
                     type="submit"
-                    className="w-full py-5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xl font-bold rounded-2xl shadow-2xl hover:from-cyan-400 hover:to-blue-500 transform hover:scale-105 transition-all duration-300"
+                    className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xl font-bold rounded-2xl shadow-2xl hover:from-cyan-400 hover:to-blue-500 transform hover:scale-105 transition-all duration-300"
                   >
                     Submeter
                   </button>
@@ -226,6 +252,39 @@ export default function ChangePassword() {
             </div>
           </div>
         </main>
+
+        {/* MODAL DE SUCESSO */}
+        {showSuccessModal && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-gradient-to-br from-green-600/20 to-emerald-600/20 rounded-3xl shadow-2xl border border-green-800/50 p-10 max-w-md w-full text-center transform scale-100 animate-in fade-in zoom-in duration-500">
+              <div className="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
+                <svg
+                  className="w-16 h-16 text-green-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={4}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-3xl font-bold text-white mb-4">
+                Palavra-passe alterada com sucesso!
+              </h3>
+              <p className="text-green-200 text-lg mb-8">
+                A tua conta está agora mais segura.
+              </p>
+              <div className="w-20 h-2 bg-green-500 rounded-full mx-auto animate-pulse"></div>
+              <p className="text-sm text-gray-400 mt-6">
+                Redirecionando para configurações...
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Bottom Nav Mobile */}
         <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-[#0f1b3a]/95 backdrop-blur-2xl border-t border-cyan-900/50 z-40">

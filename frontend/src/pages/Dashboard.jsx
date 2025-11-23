@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNotifications } from "../hooks/useNotifications";
 
 import bellOnUrl from "../icons/bell-on.svg";
+import bellOffUrl from "../icons/bell-off.svg";
 import dashboardUrl from "../icons/dashboard.svg";
 import inboxUrl from "../icons/inbox.svg";
 import outboxUrl from "../icons/outbox.svg";
@@ -17,24 +19,8 @@ import menuUrl from "../icons/menu.svg";
 export default function Dashboard() {
   const [userType] = useState("admin"); // muda para "admin" ou "user" para testar
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const stats = [
-    { iconUrl: mailUrl, label: "Recebidos", value: "520" },
-    { iconUrl: sendUrl, label: "Enviados", value: "423" },
-    { iconUrl: trashUrl, label: "Lixeira", value: "52" },
-    { iconUrl: likeUrl, label: "Likes", value: "1.4K" },
-  ];
-
-  const updates = [
-    { title: "Atualização do sistema", author: "Admin", date: "17 Nov" },
-    { title: "Nova funcionalidade", author: "Admin", date: "14 Nov" },
-    { title: "Nova funcionalidade", author: "Admin", date: "05 Nov" },
-  ];
-
-  const usersList = [
-    { name: "João Gomes", email: "joao.gomes@mail.com" },
-    { name: "Manuel Lopes", email: "manuel.lopes@mail.com" },
-  ];
+  const { enabled: notificationsEnabled, toggle: toggleNotifications } =
+    useNotifications();
 
   const handleLogout = () => {
     localStorage.clear();
@@ -56,6 +42,24 @@ export default function Dashboard() {
   const goToSettings = () => {
     window.location.href = "/Aplicacao-GUI-de-Email/#/settings";
   };
+
+  const stats = [
+    { iconUrl: mailUrl, label: "Recebidos", value: "520", route: goToInbox },
+    { iconUrl: sendUrl, label: "Enviados", value: "423", route: goToOutbox },
+    { iconUrl: trashUrl, label: "Lixeira", value: "52", route: "#" },
+    { iconUrl: likeUrl, label: "Likes", value: "1.4K", route: "#" },
+  ];
+
+  const updates = [
+    { title: "Atualização do sistema", author: "Admin", date: "17 Nov" },
+    { title: "Nova funcionalidade", author: "Admin", date: "14 Nov" },
+    { title: "Nova funcionalidade", author: "Admin", date: "05 Nov" },
+  ];
+
+  const usersList = [
+    { name: "João Gomes", email: "joao.gomes@mail.com" },
+    { name: "Manuel Lopes", email: "manuel.lopes@mail.com" },
+  ];
 
   return (
     <div className="min-h-screen bg-[#0a192f] text-white flex flex-col lg:flex-row">
@@ -129,13 +133,24 @@ export default function Dashboard() {
             </h1>
           </div>
           <div className="flex items-center gap-3 lg:gap-4 flex-shrink-0">
-            <button className="p-2.5 lg:p-3 hover:bg-white/10 rounded-2xl transition-all">
+            {/* Botão de notificações com toggle */}
+            <button
+              onClick={toggleNotifications}
+              className="relative p-2.5 lg:p-3 hover:bg-white/10 rounded-2xl transition-all duration-300 group"
+              title={
+                notificationsEnabled
+                  ? "Desativar notificações"
+                  : "Ativar notificações"
+              }
+            >
               <img
-                src={bellOnUrl}
+                src={notificationsEnabled ? bellOnUrl : bellOffUrl}
                 alt="Notificações"
-                className="w-6 h-6 lg:w-7 lg:h-7 filter-white"
+                className="w-6 h-6 lg:w-7 lg:h-7 filter-white transition-all duration-300"
               />
             </button>
+
+            {/* Avatar */}
             <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full flex items-center justify-center font-bold text-lg lg:text-xl shadow-lg">
               J
             </div>
@@ -154,12 +169,16 @@ export default function Dashboard() {
             Painel de Controlo
           </h2>
 
-          {/* Cards: mobile horizontal / desktop quadrados */}
+          {/* Cards clicáveis - mobile horizontal / desktop quadrados */}
           <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-4 lg:gap-6 mb-12">
             {stats.map((stat, i) => (
-              <div key={i}>
+              <div
+                key={i}
+                onClick={stat.route}
+                className="cursor-pointer transform transition-all duration-300 hover:scale-105 active:scale-95"
+              >
                 {/* Mobile - Horizontal */}
-                <div className="lg:hidden bg-gradient-to-r from-cyan-600 to-blue-700 rounded-3xl p-6 flex items-center gap-6 shadow-2xl">
+                <div className="lg:hidden bg-gradient-to-r from-cyan-600 to-blue-700 rounded-3xl p-6 flex items-center gap-6 shadow-2xl hover:shadow-cyan-500/50">
                   <div className="bg-white/20 p-4 rounded-2xl">
                     <img
                       src={stat.iconUrl}
@@ -174,7 +193,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Desktop - Quadrado */}
-                <div className="hidden lg:block bg-gradient-to-br from-[#1e293b]/90 to-[#0f172a]/90 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-cyan-800/50 hover:border-cyan-500/70 transition-all hover:scale-105">
+                <div className="hidden lg:block bg-gradient-to-br from-[#1e293b]/90 to-[#0f172a]/90 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-cyan-800/50 hover:border-cyan-500/70 transition-all">
                   <div className="bg-gradient-to-br from-cyan-500 to-blue-600 p-4 rounded-2xl w-fit mb-4 shadow-xl">
                     <img
                       src={stat.iconUrl}

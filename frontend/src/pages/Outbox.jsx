@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNotifications } from "../hooks/useNotifications";
 
 // =============== ÍCONES (pasta icons) ===============
 import bellOnUrl from "../icons/bell-on.svg";
+import bellOffUrl from "../icons/bell-off.svg";
 import dashboardUrl from "../icons/dashboard.svg";
 import inboxUrl from "../icons/inbox.svg";
 import outboxUrl from "../icons/outbox.svg";
@@ -12,8 +14,6 @@ import pencilUrl from "../icons/pencil-square.svg";
 import logoutUrl from "../icons/logout.svg";
 import menuUrl from "../icons/menu.svg";
 import arrowLeftUrl from "../icons/arrow-left.svg";
-
-// Ícones de status (adiciona estes 3 na pasta icons/)
 import checkUrl from "../icons/check.svg"; // verde - entregue
 import clockUrl from "../icons/clock.svg"; // cinza - em fila
 import errorUrl from "../icons/x-circle.svg"; // vermelho - erro
@@ -21,6 +21,8 @@ import errorUrl from "../icons/x-circle.svg"; // vermelho - erro
 export default function Outbox() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState(null);
+  const { enabled: notificationsEnabled, toggle: toggleNotifications } =
+    useNotifications();
 
   const sentEmails = [
     {
@@ -187,14 +189,25 @@ export default function Outbox() {
               Mail Application
             </h1>
           </div>
-          <div className="flex items-center gap-3 lg:gap-4">
-            <button className="p-2.5 lg:p-3 hover:bg-white/10 rounded-2xl transition-all">
+          <div className="flex items-center gap-3 lg:gap-4 flex-shrink-0">
+            {/* Botão de notificações com toggle */}
+            <button
+              onClick={toggleNotifications}
+              className="relative p-2.5 lg:p-3 hover:bg-white/10 rounded-2xl transition-all duration-300 group"
+              title={
+                notificationsEnabled
+                  ? "Desativar notificações"
+                  : "Ativar notificações"
+              }
+            >
               <img
-                src={bellOnUrl}
+                src={notificationsEnabled ? bellOnUrl : bellOffUrl}
                 alt="Notificações"
-                className="w-6 h-6 lg:w-7 lg:h-7 filter-white"
+                className="w-6 h-6 lg:w-7 lg:h-7 filter-white transition-all duration-300"
               />
             </button>
+
+            {/* Avatar */}
             <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full flex items-center justify-center font-bold text-lg lg:text-xl shadow-lg">
               J
             </div>

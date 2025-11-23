@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNotifications } from "../hooks/useNotifications";
 
 // =============== ÍCONES ===============
 import bellOnUrl from "../icons/bell-on.svg";
+import bellOffUrl from "../icons/bell-off.svg";
 import dashboardUrl from "../icons/dashboard.svg";
 import inboxUrl from "../icons/inbox.svg";
 import outboxUrl from "../icons/outbox.svg";
@@ -14,7 +16,10 @@ import menuUrl from "../icons/menu.svg";
 
 export default function Settings() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showDeleteSuccessModal, setShowDeleteSuccessModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { enabled: notificationsEnabled, toggle: toggleNotifications } =
+    useNotifications();
 
   // Dados do usuário (pode vir do localStorage ou API depois)
   const userName = "Ana Souza";
@@ -37,9 +42,17 @@ export default function Settings() {
   };
 
   const confirmDelete = () => {
-    alert("Conta eliminada com sucesso!");
+    // Limpa tudo
     localStorage.clear();
-    window.location.href = "/Aplicacao-GUI-de-Email/#/auth";
+
+    // Mostra o modal de sucesso
+    setShowDeleteModal(false); // fecha o modal de confirmação
+    setShowDeleteSuccessModal(true); // abre o modal de sucesso
+
+    // Depois de 2 segundos, vai para o login
+    setTimeout(() => {
+      window.location.href = "/Aplicacao-GUI-de-Email/#/auth";
+    }, 6000);
   };
 
   const goToCompose = () => {
@@ -137,16 +150,27 @@ export default function Settings() {
               Mail Application
             </h1>
           </div>
-          <div className="flex items-center gap-3 lg:gap-4">
-            <button className="p-2.5 lg:p-3 hover:bg-white/10 rounded-2xl transition-all">
+          <div className="flex items-center gap-3 lg:gap-4 flex-shrink-0">
+            {/* Botão de notificações com toggle */}
+            <button
+              onClick={toggleNotifications}
+              className="relative p-2.5 lg:p-3 hover:bg-white/10 rounded-2xl transition-all duration-300 group"
+              title={
+                notificationsEnabled
+                  ? "Desativar notificações"
+                  : "Ativar notificações"
+              }
+            >
               <img
-                src={bellOnUrl}
+                src={notificationsEnabled ? bellOnUrl : bellOffUrl}
                 alt="Notificações"
-                className="w-6 h-6 lg:w-7 lg:h-7 filter-white"
+                className="w-6 h-6 lg:w-7 lg:h-7 filter-white transition-all duration-300"
               />
             </button>
+
+            {/* Avatar */}
             <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full flex items-center justify-center font-bold text-lg lg:text-xl shadow-lg">
-              {firstLetter}
+              J
             </div>
           </div>
         </header>
@@ -196,11 +220,20 @@ export default function Settings() {
                 <span className="text-lg font-medium">
                   Notificações do Sistema
                 </span>
-                <button className="p-3 hover:bg-white/10 rounded-2xl transition-all">
+                {/* Botão de notificações com toggle */}
+                <button
+                  onClick={toggleNotifications}
+                  className="relative p-2.5 lg:p-3 hover:bg-white/10 rounded-2xl transition-all duration-300 group"
+                  title={
+                    notificationsEnabled
+                      ? "Desativar notificações"
+                      : "Ativar notificações"
+                  }
+                >
                   <img
-                    src={bellOnUrl}
+                    src={notificationsEnabled ? bellOnUrl : bellOffUrl}
                     alt="Notificações"
-                    className="w-10 h-10 filter-white"
+                    className="w-6 h-6 lg:w-7 lg:h-7 filter-white transition-all duration-300"
                   />
                 </button>
               </div>
@@ -243,6 +276,44 @@ export default function Settings() {
           </div>
         )}
 
+        {/* MODAL DE SUCESSO - CONTA ELIMINADA */}
+        {showDeleteSuccessModal && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-gradient-to-br from-red-600/20 to-pink-600/20 rounded-3xl shadow-2xl border border-red-800/50 p-10 max-w-md w-full text-center transform scale-100 animate-in fade-in zoom-in duration-500">
+              {/* Ícone de sucesso com X vermelho grande */}
+              <div className="w-24 h-24 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
+                <svg
+                  className="w-16 h-16 text-red-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={4}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </div>
+
+              <h3 className="text-3xl font-bold text-white mb-4">
+                Conta eliminada com sucesso!
+              </h3>
+              <p className="text-red-200 text-lg mb-8">
+                Todos os dados foram removidos permanentemente.
+              </p>
+
+              <div className="flex justify-center">
+                <div className="w-16 h-2 bg-red-500 rounded-full animate-pulse"></div>
+              </div>
+
+              <p className="text-sm text-gray-400 mt-6">
+                Redirecionando para o login...
+              </p>
+            </div>
+          </div>
+        )}
         {/* Bottom Nav Mobile */}
         <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-[#0f1b3a]/95 backdrop-blur-2xl border-t border-cyan-900/50 z-40">
           <div className="grid grid-cols-4 py-4 text-center">

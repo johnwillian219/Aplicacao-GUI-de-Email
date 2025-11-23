@@ -1,7 +1,8 @@
 import { useState } from "react";
-
+import { useNotifications } from "../hooks/useNotifications";
 // =============== ÍCONES ===============
 import bellOnUrl from "../icons/bell-on.svg";
+import bellOffUrl from "../icons/bell-off.svg";
 import dashboardUrl from "../icons/dashboard.svg";
 import inboxUrl from "../icons/inbox.svg";
 import outboxUrl from "../icons/outbox.svg";
@@ -14,17 +15,29 @@ import menuUrl from "../icons/menu.svg";
 
 export default function Compose() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { enabled: notificationsEnabled, toggle: toggleNotifications } =
+    useNotifications();
   const [to, setTo] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
 
+  // Estados para os modais
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleSend = () => {
     if (!to || !subject || !message) {
-      alert("Preencha todos os campos!");
+      setErrorMessage("Preencha todos os campos!");
+      setShowErrorModal(true);
       return;
     }
-    alert("Email enviado com sucesso!");
-    // Aqui integrar com API depois
+
+    // Simulação de envio bem-sucedido
+    setShowSuccessModal(true);
+    //setShowErrorModal(true);
+
+    // Limpa o formulário
     setTo("");
     setSubject("");
     setMessage("");
@@ -144,13 +157,24 @@ export default function Compose() {
             </h1>
           </div>
           <div className="flex items-center gap-3 lg:gap-4 flex-shrink-0">
-            <button className="p-2.5 lg:p-3 hover:bg-white/10 rounded-2xl transition-all">
+            {/* Botão de notificações com toggle */}
+            <button
+              onClick={toggleNotifications}
+              className="relative p-2.5 lg:p-3 hover:bg-white/10 rounded-2xl transition-all duration-300 group"
+              title={
+                notificationsEnabled
+                  ? "Desativar notificações"
+                  : "Ativar notificações"
+              }
+            >
               <img
-                src={bellOnUrl}
+                src={notificationsEnabled ? bellOnUrl : bellOffUrl}
                 alt="Notificações"
-                className="w-6 h-6 lg:w-7 lg:h-7 filter-white"
+                className="w-6 h-6 lg:w-7 lg:h-7 filter-white transition-all duration-300"
               />
             </button>
+
+            {/* Avatar */}
             <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full flex items-center justify-center font-bold text-lg lg:text-xl shadow-lg">
               J
             </div>
@@ -225,6 +249,74 @@ export default function Compose() {
             </div>
           </div>
         </main>
+
+        {/* MODAL DE SUCESSO */}
+        {showSuccessModal && (
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-gradient-to-br from-[#0f1b3a] to-[#0a2e5c] rounded-3xl shadow-2xl border border-cyan-800/50 p-10 max-w-md w-full text-center transform scale-100 animate-in fade-in zoom-in duration-300">
+              <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg
+                  className="w-12 h-12 text-green-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={3}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-3xl font-bold text-white mb-4">
+                Email enviado com sucesso!
+              </h3>
+              <p className="text-cyan-200 mb-8">
+                O destinatário receberá em breve.
+              </p>
+              <button
+                onClick={() => setShowSuccessModal(false)}
+                className="px-10 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-2xl shadow-lg hover:from-cyan-400 hover:to-blue-500 transform hover:scale-105 transition-all duration-300"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* MODAL DE ERRO */}
+        {showErrorModal && (
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-gradient-to-br from-[#0f1b3a] to-[#0a2e5c] rounded-3xl shadow-2xl border border-red-800/50 p-10 max-w-md w-full text-center transform scale-100 animate-in fade-in zoom-in duration-300">
+              <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg
+                  className="w-12 h-12 text-red-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={3}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-3xl font-bold text-white mb-4">
+                Erro ao enviar
+              </h3>
+              <p className="text-red-300 mb-8">{errorMessage}</p>
+              <button
+                onClick={() => setShowErrorModal(false)}
+                className="px-10 py-4 bg-gradient-to-r from-red-600 to-pink-600 text-white font-bold rounded-2xl shadow-lg hover:from-red-500 hover:to-pink-500 transform hover:scale-105 transition-all duration-300"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Bottom Nav Mobile */}
         <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-[#0f1b3a]/95 backdrop-blur-2xl border-t border-cyan-900/50 z-40">

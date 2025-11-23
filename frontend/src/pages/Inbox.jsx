@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNotifications } from "../hooks/useNotifications";
 
 // =============== TEUS ÍCONES ===============
 import bellOnUrl from "../icons/bell-on.svg";
+import bellOffUrl from "../icons/bell-off.svg";
 import dashboardUrl from "../icons/dashboard.svg";
 import inboxUrl from "../icons/inbox.svg";
 import outboxUrl from "../icons/outbox.svg";
@@ -11,6 +13,7 @@ import mailUrl from "../icons/email.svg";
 import pencilUrl from "../icons/pencil-square.svg";
 import trashUrl from "../icons/trash.svg";
 import heartUrl from "../icons/heart.svg";
+import heartFillUrl from "../icons/heart-fill.svg";
 import logoutUrl from "../icons/logout.svg";
 import menuUrl from "../icons/menu.svg";
 import arrowLeftUrl from "../icons/arrow-left.svg"; // ← novo ícone para voltar (adiciona este SVG na pasta icons)
@@ -18,6 +21,22 @@ import arrowLeftUrl from "../icons/arrow-left.svg"; // ← novo ícone para volt
 export default function Inbox() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState(null);
+  const { enabled: notificationsEnabled, toggle: toggleNotifications } =
+    useNotifications();
+  const [favoriteEmails, setFavoriteEmails] = useState(new Set()); // guarda IDs favoritos
+
+  // Função para alternar favorito
+  const toggleFavorite = (emailId) => {
+    setFavoriteEmails((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(emailId)) {
+        newSet.delete(emailId); // já estava → remove
+      } else {
+        newSet.add(emailId); // não estava → adiciona
+      }
+      return newSet;
+    });
+  };
 
   const emails = [
     {
@@ -155,13 +174,24 @@ export default function Inbox() {
             </h1>
           </div>
           <div className="flex items-center gap-3 lg:gap-4 flex-shrink-0">
-            <button className="p-2.5 lg:p-3 hover:bg-white/10 rounded-2xl transition-all">
+            {/* Botão de notificações com toggle */}
+            <button
+              onClick={toggleNotifications}
+              className="relative p-2.5 lg:p-3 hover:bg-white/10 rounded-2xl transition-all duration-300 group"
+              title={
+                notificationsEnabled
+                  ? "Desativar notificações"
+                  : "Ativar notificações"
+              }
+            >
               <img
-                src={bellOnUrl}
+                src={notificationsEnabled ? bellOnUrl : bellOffUrl}
                 alt="Notificações"
-                className="w-6 h-6 lg:w-7 lg:h-7 filter-white"
+                className="w-6 h-6 lg:w-7 lg:h-7 filter-white transition-all duration-300"
               />
             </button>
+
+            {/* Avatar */}
             <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full flex items-center justify-center font-bold text-lg lg:text-xl shadow-lg">
               J
             </div>
@@ -255,12 +285,34 @@ export default function Inbox() {
                       <h3 className="text-2xl font-bold text-cyan-300">
                         {selectedEmail.subject}
                       </h3>
-                      <button className="text-cyan-400 hover:text-white">
+
+                      {/* Botão de Favorito com toggle */}
+                      <button
+                        onClick={() => toggleFavorite(selectedEmail.id)}
+                        className="group relative p-2 hover:bg-white/10 rounded-xl transition-all duration-300"
+                        title={
+                          favoriteEmails.has(selectedEmail.id)
+                            ? "Remover dos favoritos"
+                            : "Adicionar aos favoritos"
+                        }
+                      >
                         <img
-                          src={heartUrl}
+                          src={
+                            favoriteEmails.has(selectedEmail.id)
+                              ? heartFillUrl
+                              : heartUrl
+                          }
                           alt="Favorito"
-                          className="w-7 h-7 filter-white"
+                          className={`w-7 h-7 transition-all duration-300 ${
+                            favoriteEmails.has(selectedEmail.id)
+                              ? "text-red-500 drop-shadow-glow-red" // vermelho puro
+                              : "text-cyan-400 filter-white hover:text-red-400"
+                          }`}
                         />
+                        {/* Animação de "pulso" quando adiciona aos favoritos */}
+                        {favoriteEmails.has(selectedEmail.id) && (
+                          <span className="absolute inset-0 rounded-full animate-ping bg-red-500/30"></span>
+                        )}
                       </button>
                     </div>
                     <p className="text-lg text-gray-300 mb-6">
